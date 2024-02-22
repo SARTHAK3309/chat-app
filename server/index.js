@@ -1,25 +1,34 @@
 import express from "express"
-import mongoose, { connect } from "mongoose"
+import cookieParser from "cookie-parser"
 import dotenv from "dotenv"
 import cors from "cors"
 import chats from "./temp/data.js"
 import { connectDB } from "./config.js"
-
+import  jwt  from "jsonwebtoken"
+import {authMiddleware} from "./middlewares/AuthMiddleware.js"
+import UserRouter from "./Routers/UserRouter.js"
 dotenv.config()
 const app = express()
 
 
 connectDB()
+app.use(express.json())
+app.use(cookieParser())
 app.use(cors())
-
-app.get('/', (req,res)=>{
-    console.log("API is working")
-    res.send("hello")
-})
-
+app.use("/api/user", UserRouter)
 
 app.get("/api/chats", (req, res)=>{
     res.json(chats)
+})
+
+
+///checking for authorisation
+app.get("/", authMiddleware, (req, res)=>{
+    console.log("logged in ")
+    return res.json( {
+        "success" : true,
+        "message" : "passed"
+    })
 })
 app.get("/api/chats/:id", (req, res)=>{
     const {id} = req.params

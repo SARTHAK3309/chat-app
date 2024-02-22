@@ -1,18 +1,26 @@
-import React, { useState,useRef } from 'react'
+import React, { useState,useRef, useEffect } from 'react'
 import "./AuthPage.css"
 import LoginPage from './LoginPage'
-import SigninPage from './SigninPage'
+import SigninPage from './RegisterPage'
+import RegisterPage from './RegisterPage'
 const AuthPage = () => {
     const [isLogin, setisLogin]  = useState(true)
     const inputRef = useRef(null)
     const handleChangeAuthPage = (e)=>{
       const id = e.target.id
       if(isLogin && id === "signup")setisLogin(!isLogin)
-      if(!isLogin && id === "login")setisLogin(!isLogin)
-
-      console.log(id)
+      if(!isLogin && id === "login")setisLogin(!isLogin)    
+    
+    
+    
     }
+
+
+    // useEffect(()=>{
+      
+    // }, [])
   return (
+   <div className='body color'>
     <div class="wrapper">
     <div class="title-text">
        <div class="title login">
@@ -76,12 +84,12 @@ const AuthPage = () => {
              </div>
           </form> */}
           <LoginPage isLogin={isLogin} />
-          <SigninPage isLogin={isLogin} />
+          <RegisterPage isLogin={isLogin} />
 
        </div>
     </div>
  </div>
- 
+ </div>
   )
 }
 

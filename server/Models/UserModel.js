@@ -1,4 +1,5 @@
 import mongoose, { Schema }  from "mongoose";
+import bcrypt from "bcrypt"
 const UserSchema = new mongoose.Schema({
   username : {
     type : String,
@@ -21,10 +22,33 @@ const UserSchema = new mongoose.Schema({
   imageURL : {
     type : String,
     default : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+  },
+  provider : {
+    type : String, 
+    default : "local"
   }
 }, {
   timestamps : true
 });
+
+
+//hash passwords before saving and only when password field is changed
+UserSchema.pre('save', async function (next) {
+  const user = this;
+  //check whether passsword field has changed
+  if (!user.isModified('password')) 
+    return next();
+  
+
+  try {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+    next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
 
 const User = mongoose.model('User', UserSchema);
 
