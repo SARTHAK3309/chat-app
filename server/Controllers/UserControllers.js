@@ -62,3 +62,71 @@ export const loginUser = async (req, res) => {
         })
     }
 }
+
+export const searchUser = async(req, res)=>{
+    try{
+        const {search} = req.query
+        if(search === "")
+        return res.json({
+            success : true,
+            users : []
+        })
+       const users = await User.aggregate([
+            // Stage 1: Match users containing the provided word
+            {
+              $match: {
+                $or: [
+                  { username: { $regex: search, $options: 'i' } }, // Case-insensitive regex match
+                  { email: { $regex: search, $options: 'i' } }     // Case-insensitive regex match
+                ]
+              }
+            },
+            // Stage 2: Add a calculated field for the sorting order
+            {
+              $addFields: {
+                sortScore: {
+                  $switch: {
+                    branches: [
+                      // Case 1: Exact match with the provided search gets a higher score
+                      { case: { $or: [{ $eq: ["$username", search] }, { $eq: ["$email", search] }] }, then: 1 },
+                      // Case 2: Other matches with the provided search get a lower score
+                      { case: { $or: [{ $ne: [{ $indexOfCP: ["$username", search] }, -1] }, { $ne: [{ $indexOfCP: ["$email", search] }, -1] }] }, then: 2 },
+                      // Case 3: All other users get a score of 3
+                    ],
+                    default: 3
+                  }
+                }
+              }
+            },
+            // Stage 3: Sort users based on the calculated score
+            { $sort: { sortScore: 1 } },
+            // Stage 4: Project to remove the calculated field
+            { $project: { sortScore: 0 } }
+            ,
+            //stage 5 : remove the current logged in user
+            {
+                $match : {email: {$ne: req.user.email}}
+            },
+            {
+                $limit : 20
+            }
+          ])
+
+        return res.json(
+            {
+                success : true,
+                users : users
+            }
+        )
+
+    }
+    catch(e){
+        
+        return res.json(
+            {
+                success : false,
+                message : e.message
+            }
+        )
+    }
+}

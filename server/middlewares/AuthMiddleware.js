@@ -21,7 +21,7 @@
                     });
                 }
                 
-                
+                req.user = decoded
 
                 next();
             })
