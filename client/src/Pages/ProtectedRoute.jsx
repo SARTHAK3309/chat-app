@@ -6,19 +6,22 @@ import AuthPage from "./AuthPage";
 const ProtectedRoute = (props) => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    
+    // const [user, setUser] = useState()
     useEffect(()=>{
         (
           async function(){
               try{
-              console.log("you called me")
-              const url = `${import.meta.env.VITE_BACKEND_URL}/`
-              const {data} = await axios.get(url, {
+              const headerOptions = {
                 headers:{
                   'Authorisation' : `Bearer ${localStorage.getItem('token')}`
                 }
-              })
-              console.log("d", data)
+              }
+              //changed here
+              const url = `${import.meta.env.VITE_BACKEND_URL}/api/user/`
+              const {data} = await axios.get(url, headerOptions)
+              // user = data.user
+              // setUser(data.user)
+              localStorage.setItem('user', JSON.stringify(data.user))
               if(data.success == false)throw new Error(data.message)
               setIsLoggedIn(true)
               }
@@ -33,8 +36,7 @@ const ProtectedRoute = (props) => {
     return (
         <React.Fragment>
             {
-                isLoggedIn ? props.children : <AuthPage />
-                // props.children
+                isLoggedIn ?  props.children : <AuthPage />
             }
         </React.Fragment>
     );

@@ -7,6 +7,7 @@ import { connectDB } from "./config.js"
 import  jwt  from "jsonwebtoken"
 import {authMiddleware} from "./middlewares/AuthMiddleware.js"
 import UserRouter from "./Routers/UserRouter.js"
+import ChatRouter from "./Routers/ChatRouter.js"
 dotenv.config()
 const app = express()
 
@@ -17,14 +18,11 @@ app.use(cookieParser())
 app.use(cors())
 app.use("/api/user", UserRouter)
 
-app.get("/api/chats", (req, res)=>{
-    res.json(chats)
-})
+app.use("/api/chat", authMiddleware, ChatRouter)
 
 
 ///checking for authorisation
 app.get("/", authMiddleware, (req, res)=>{
-    console.log("logged in ")
     return res.json( {
         "success" : true,
         "message" : "passed"

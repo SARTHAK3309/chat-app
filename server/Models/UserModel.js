@@ -22,6 +22,26 @@ const UserSchema = new mongoose.Schema({
     type : String,
     default : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
   },
+  archivedChats : [
+    {
+      type : Schema.Types.ObjectId,
+      ref : 'Chat'
+    }
+  ],
+
+  unarchivedChats : [
+    {
+      type : Schema.Types.ObjectId,
+      ref : 'Chat'
+    }
+  ],
+  pinnedChats : [
+    {
+      type : Schema.Types.ObjectId,
+      ref : 'Chat'
+    }
+  ],
+  
   provider : {
     type : String, 
     default : "local"
