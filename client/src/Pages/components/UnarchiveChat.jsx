@@ -13,7 +13,7 @@ const UnarchiveChat = ({ chat, user, handlePin, handleArchive,  selectedchat, se
             <div className='flex flex-col'>
                 <div>
                     {chat?.isGroupChat ? <> {chat?.chatName} </> :  getSender(chat?.users, user) === "ai" ? <>Assistant</>
-                    : <>getSender(chat?.users, user)</>
+                    : <>{getSender(chat?.users, user)}</>
 }
                 </div>
 

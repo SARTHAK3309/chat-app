@@ -9,7 +9,8 @@ import UnarchiveChat from './components/UnarchiveChat';
 import { archiveChat, pinChat, unarchiveChat, unpinChat } from './helper';
 import ArchiveChat from './components/ArchiveChat';
 import WelcomeChatbox from './components/WelcomeChatbox';
-import AiChatbox from './components/AiChatbox';
+import AiChatbox from './components/AiChatbox'
+import GroupChatModal from "./components/GroupChatModal";
 import GroupChatbox from './components/GroupChatbox';
 import PersonalChatbox from './components/PersonalChatbox';
 
@@ -21,6 +22,7 @@ const HomePage = () => {
   const [selectedchat, setSelectedchat] = useState()
   const [totalunarchivedchats, setTotalunarchivedchats] = useState([])
   const [archivedChats, setarchivedchats] = useState([])
+  const [isGroupChatModalOpen, setIsgroupChatModalOpen] = useState(false);
 
   useState(()=>{
     console.log("lod", selectedchat)
@@ -58,7 +60,7 @@ const HomePage = () => {
   }
   const handleunArchive = (chat, user,e) => {
 
-    setSelectedchat(null)
+    setSelectedchat(prev=>null)
     unarchiveChat(chat, user)
     let prev = [...archivedChats]
     prev = prev.filter(obj => obj._id !== chat._id)
@@ -68,8 +70,7 @@ const HomePage = () => {
     }])
   }
   const handleArchive = (chat, user,e) => {
-
-      setSelectedchat(null)
+    setSelectedchat(prev=>null)
     archiveChat(chat, user)
     let prev = [...totalunarchivedchats]
     prev = prev.filter(obj => obj._id !== chat._id)
@@ -88,17 +89,17 @@ const HomePage = () => {
   return (
     <div className='min-h-[100vh] min-w-[100vw] color '>
 
-      {/* <div className='absolute inset-0 bg-[black] '></div> */}
+      <GroupChatModal totalunarchivedchats = {totalunarchivedchats} setTotalunarchivedchats = {setTotalunarchivedchats} isGroupChatModalOpen={isGroupChatModalOpen} setIsgroupChatModalOpen = {setIsgroupChatModalOpen} user = {user} />
 
       <SideBar sidebar={sidebar} setsidebar={setsidebar} searchedUsers={searchedUsers} setsearchedUsers={setsearchedUsers} />
-      <Header sidebar={sidebar} setsidebar={setsidebar} />
+      <Header sidebar={sidebar} setsidebar={setsidebar} user = {user}/>
 
-      <div className='p-2 h-[92vh] gap-2 flex  items-center'>
+      <div className='p-2 h-[92vh] gap-2 flex  items-center '>
 
-        <div className='w-[100%] sm:w-[30%] block bg-white h-[100%] rounded-md p-2 text-xl'>
+        <div className='w-[100%] sm:w-[30%] block bg-white h-[100%] rounded-md p-2 text-xl overflow-auto'>
           <div className='flex justify-between items-center mb-2'>
             <div>MY CHATS</div>
-            <button type="button" class="text-white px-5 py-2 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 text-3xl rounded-full  text-center font-extrabold"> + </button>
+            <button onClick = {() => setIsgroupChatModalOpen(true)} type="button" class="text-white px-5 py-2 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 text-3xl rounded-full  text-center font-extrabold"> + </button>
 
           </div>
           <div onClick={() => setIsarchive(!isarchive)} className='flex justify-start place-items-center gap-4 text-xl bg-slate-300 p-2 mb-4 rounded-md cursor-pointer hover:bg-slate-400 tracking-wide duration-100' >

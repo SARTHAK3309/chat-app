@@ -14,7 +14,9 @@ const PinnedChat = ({ chat, user, handleunPin, handleArchive, selectedchat, setS
         <div style = {{backgroundColor : selectedchat?._id === chat?._id ? "#b8b3a7" : "grey"}} onClick = {()=>  {   setSelectedchat(chat) }}  className=' flex justify-between place-items-center gap-4 w-[90%] mx-auto text-sm bg-slate-300 p-2 mb-2 rounded-md cursor-pointer hover:bg-slate-400 tracking-wide duration-100' >
             <div className='flex flex-col'>
                 <div>
-                    {chat?.isGroupChat ? <> {chat?.chatName} </> : <> {getSender(chat?.users, user)}</>}
+                {chat?.isGroupChat ? <> {chat?.chatName} </> :  getSender(chat?.users, user) === "ai" ? <>Assistant</>
+                    : <>{getSender(chat?.users, user)}</>
+    }
                 </div>
 
                 <div>
